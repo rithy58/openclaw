@@ -2,6 +2,8 @@ FROM node:24-trixie
 
 WORKDIR /app
 
+RUN curl -fsSL https://tailscale.com/install.sh | sh
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY ui/package.json ./ui/package.json
 COPY patches ./patches
@@ -17,4 +19,4 @@ RUN pnpm ui:build
 
 ENV NODE_ENV=production
 EXPOSE 18789
-CMD ["node", "dist/index.js", "gateway", "--allow-unconfigured", "--bind", "lan"]
+ENTRYPOINT ["./entrypoint.sh"]
