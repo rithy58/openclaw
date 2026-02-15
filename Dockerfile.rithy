@@ -4,6 +4,15 @@ WORKDIR /app
 
 RUN curl -fsSL https://tailscale.com/install.sh | sh
 
+ARG TARGETARCH
+RUN if [ "$TARGETARCH" = "amd64" ]; then \
+        curl -L https://github.com/steipete/gogcli/releases/download/v0.11.0/gogcli_0.11.0_linux_amd64.tar.gz \
+        | tar -xz -C /usr/local/bin && chmod +x /usr/local/bin/gog; \
+    elif [ "$TARGETARCH" = "arm64" ]; then \
+        curl -L https://github.com/steipete/gogcli/releases/download/v0.11.0/gogcli_0.11.0_linux_arm64.tar.gz \
+        | tar -xz -C /usr/local/bin && chmod +x /usr/local/bin/gog; \
+    fi
+
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 COPY ui/package.json ./ui/package.json
 COPY patches ./patches
